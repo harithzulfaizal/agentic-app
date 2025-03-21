@@ -1,8 +1,13 @@
+// src/components/Sidebar.jsx
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
-import { FaRobot, FaComment, FaFileAlt, FaSearch, FaCog, FaMoon, FaSun, FaPlus, FaChevronDown } from 'react-icons/fa';
+import { 
+  FaRobot, FaComment, FaFileAlt, FaSearch, FaCog, 
+  FaMoon, FaSun, FaPlus, FaChevronDown, FaSignOutAlt,
+  FaDatabase
+} from 'react-icons/fa';
 
-const Sidebar = ({ isOpen, onChatSelect, currentChat, onNewChat }) => {
+const Sidebar = ({ isOpen, onChatSelect, currentChat, onNewChat, user, onSignOut }) => {
   const { darkMode, toggleDarkMode } = useTheme();
   
   const chatItems = [
@@ -15,14 +20,31 @@ const Sidebar = ({ isOpen, onChatSelect, currentChat, onNewChat }) => {
     { id: 'settings', title: 'Settings', icon: 'cog' }
   ];
   
+  // Add knowledge base option for admin users
+  if (user && user.role === 'admin') {
+    settingsItems.push({ id: 'knowledge-base', title: 'Knowledge Base', icon: 'database' });
+  }
+  
   const getIcon = (iconName) => {
     switch (iconName) {
       case 'comment': return <FaComment />;
       case 'file-alt': return <FaFileAlt />;
       case 'search': return <FaSearch />;
       case 'cog': return <FaCog />;
+      case 'database': return <FaDatabase />;
       default: return <FaComment />;
     }
+  };
+
+  // Get user initials for avatar
+  const getUserInitials = () => {
+    if (!user || !user.name) return 'U';
+    
+    const names = user.name.split(' ');
+    if (names.length > 1) {
+      return `${names[0][0]}${names[names.length - 1][0]}`;
+    }
+    return names[0][0];
   };
   
   return (
@@ -53,7 +75,7 @@ const Sidebar = ({ isOpen, onChatSelect, currentChat, onNewChat }) => {
         {settingsItems.map(item => (
           <div 
             key={item.id}
-            className="chat-item"
+            className={`chat-item${currentChat.title === item.title ? ' active' : ''}`}
             onClick={() => onChatSelect(item)}
           >
             {getIcon(item.icon)}
@@ -65,6 +87,11 @@ const Sidebar = ({ isOpen, onChatSelect, currentChat, onNewChat }) => {
           {darkMode ? <FaSun /> : <FaMoon />}
           <span className="chat-title">{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
         </div>
+
+        <div className="chat-item sign-out-item" onClick={onSignOut}>
+          <FaSignOutAlt />
+          <span className="chat-title">Sign Out</span>
+        </div>
       </div>
       
       <div className="sidebar-footer">
@@ -75,10 +102,14 @@ const Sidebar = ({ isOpen, onChatSelect, currentChat, onNewChat }) => {
       </div>
       
       <div className="user-profile">
-        <div className="user-avatar">U</div>
+        <div className="user-avatar">
+          {getUserInitials()}
+        </div>
         <div className="user-info">
-          <div className="user-name">User</div>
-          <div className="user-status">Free Tier</div>
+          <div className="user-name">{user ? user.name : 'User'}</div>
+          <div className="user-status">
+            {user ? (user.role === 'admin' ? 'Admin' : 'User') : 'Guest'}
+          </div>
         </div>
         <FaChevronDown />
       </div>

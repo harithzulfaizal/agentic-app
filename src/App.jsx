@@ -1,17 +1,27 @@
+// Adding Knowledge Base imports and handling to AppContent
+// Inside AppContent component in App.jsx
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Sidebar from './components/Sidebar';
 import ChatHeader from './components/ChatHeader';
 import ChatContainer from './components/ChatContainer';
 import ChatFooter from './components/ChatFooter';
+import AuthContainer from './components/AuthContainer';
+import KnowledgeBase from './components/KnowledgeBase';
 import './styles/index.css';
+import './styles/auth.css';
+import './styles/knowledgeBase.css';
 
-function App() {
+// Main App component that uses auth context
+const AppContent = () => {
+  const { currentUser, loading, signOut } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [messages, setMessages] = useState([]);
   const [currentChat, setCurrentChat] = useState({ title: 'Current Session', icon: 'comment' });
   const [showWelcome, setShowWelcome] = useState(true);
   const [isInputDisabled, setIsInputDisabled] = useState(false);
+  const [currentView, setCurrentView] = useState('chat');
 
   useEffect(() => {
     // Function to handle window resize
@@ -22,12 +32,14 @@ function App() {
     // Add event listener
     window.addEventListener('resize', handleResize);
 
-    // Load chat history
-    loadHistory();
+    // Load history if user is logged in
+    if (currentUser) {
+      loadHistory();
+    }
 
     // Cleanup
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [currentUser]);
 
   const loadHistory = async () => {
     try {
@@ -118,40 +130,103 @@ function App() {
   
   const handleChatSelect = (chat) => {
     setCurrentChat(chat);
+    
+    // If selecting knowledge base, change view
+    if (chat.id === 'knowledge-base') {
+      setCurrentView('knowledge-base');
+    } else {
+      setCurrentView('chat');
+    }
+    
     if (window.innerWidth <= 768) {
       setIsSidebarOpen(false);
     }
   };
 
+  const handleSignOut = () => {
+    signOut();
+    // Clear messages and reset state
+    setMessages([]);
+    setShowWelcome(true);
+    setCurrentView('chat');
+  };
+
+  // If still checking auth status, show loading
+  if (loading) {
+    return (
+      <div className="auth-loading">
+        <div className="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  // If no user is authenticated, show auth forms
+  if (!currentUser) {
+    return (
+      <div className="app auth-page">
+        <AuthContainer />
+      </div>
+    );
+  }
+
+  // Function to render the current view
+  const renderCurrentView = () => {
+    switch (currentView) {
+      case 'knowledge-base':
+        return <KnowledgeBase />;
+      case 'chat':
+      default:
+        return (
+          <>
+            <ChatContainer 
+              messages={messages}
+              showWelcome={showWelcome}
+              onSuggestionClick={sendMessage}
+            />
+            
+            <ChatFooter 
+              onSendMessage={sendMessage}
+              isDisabled={isInputDisabled}
+            />
+          </>
+        );
+    }
+  };
+
+  // User is authenticated, show chat interface
   return (
-    <ThemeProvider>
-      <div className="app">
-        <Sidebar 
-          isOpen={isSidebarOpen} 
-          onChatSelect={handleChatSelect}
-          currentChat={currentChat}
-          onNewChat={clearHistory}
+    <div className="app">
+      <Sidebar 
+        isOpen={isSidebarOpen} 
+        onChatSelect={handleChatSelect}
+        currentChat={currentChat}
+        onNewChat={clearHistory}
+        user={currentUser}
+        onSignOut={handleSignOut}
+      />
+      
+      <div className="main-content">
+        <ChatHeader 
+          title={currentChat.title}
+          onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+          onClear={currentView === 'chat' ? clearHistory : null}
+          user={currentUser}
         />
         
-        <div className="main-content">
-          <ChatHeader 
-            title={currentChat.title}
-            onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)}
-            onClear={clearHistory}
-          />
-          
-          <ChatContainer 
-            messages={messages}
-            showWelcome={showWelcome}
-            onSuggestionClick={sendMessage}
-          />
-          
-          <ChatFooter 
-            onSendMessage={sendMessage}
-            isDisabled={isInputDisabled}
-          />
-        </div>
+        {renderCurrentView()}
       </div>
+    </div>
+  );
+};
+
+// Root App component that provides context
+function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </ThemeProvider>
   );
 }

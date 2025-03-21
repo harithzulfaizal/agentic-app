@@ -1,0 +1,251 @@
+/* src/styles/knowledgeBase.css */
+
+.knowledge-base-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .knowledge-base-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--dark-bg);
+  }
+  
+  .knowledge-base-description {
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  
+  .upload-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 12px 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .knowledge-base-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .search-container {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-color);
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 10px 40px 10px 35px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+  }
+  
+  .clear-search {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--secondary-color);
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.95rem;
+  }
+  
+  .clear-search:hover {
+    color: var(--dark-bg);
+  }
+  
+  .upload-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .file-input {
+    display: none;
+  }
+  
+  .upload-button {
+    padding: 10px 16px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+  }
+  
+  .upload-button:hover {
+    background-color: var(--primary-hover);
+  }
+  
+  .documents-container {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+  }
+  
+  .documents-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .documents-table th,
+  .documents-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .documents-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: var(--dark-bg);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+  }
+  
+  .document-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+  }
+  
+  .document-name svg {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+  }
+  
+  .document-type {
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+  }
+  
+  .document-size {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+  }
+  
+  .document-date {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+  }
+  
+  .document-actions {
+    text-align: center;
+  }
+  
+  .delete-button {
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .delete-button:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+  }
+  
+  .no-documents {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--secondary-color);
+    font-style: italic;
+  }
+  
+  /* Dark mode styles */
+  body.dark-mode .knowledge-base-title {
+    color: white;
+  }
+  
+  body.dark-mode .documents-container {
+    background-color: #343541;
+  }
+  
+  body.dark-mode .documents-table th {
+    background-color: #444654;
+    color: #e1e1e1;
+  }
+  
+  body.dark-mode .documents-table th,
+  body.dark-mode .documents-table td {
+    border-bottom-color: #565869;
+  }
+  
+  body.dark-mode .upload-error {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #ff8c8c;
+  }
+  
+  body.dark-mode .search-input {
+    background-color: #444654;
+    color: white;
+    border-color: #565869;
+  }
+  
+  body.dark-mode .document-name {
+    color: white;
+  }
+  
+  body.dark-mode .document-type,
+  body.dark-mode .document-size,
+  body.dark-mode .document-date {
+    color: #a0a0a0;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .knowledge-base-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .documents-table {
+      display: block;
+      overflow-x: auto;
+    }
+    
+    .document-type,
+    .document-size {
+      display: none;
+    }
+  }

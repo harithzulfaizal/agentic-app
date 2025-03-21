@@ -1,7 +1,8 @@
+// src/components/ChatHeader.jsx
 import React from 'react';
-import { FaBars, FaBolt, FaFileExport, FaTrash } from 'react-icons/fa';
+import { FaBars, FaBolt, FaFileExport, FaTrash, FaUser } from 'react-icons/fa';
 
-const ChatHeader = ({ title, onMenuToggle, onClear }) => {
+const ChatHeader = ({ title, onMenuToggle, onClear, user }) => {
   return (
     <div className="chat-header">
       <div className="chat-header-title">
@@ -15,6 +16,14 @@ const ChatHeader = ({ title, onMenuToggle, onClear }) => {
         </div>
       </div>
       <div className="header-actions">
+        {user && (
+          <div className="header-user-info">
+            <div className="header-user-avatar">
+              {user.name ? user.name.charAt(0).toUpperCase() : <FaUser />}
+            </div>
+            <span className="header-username">{user.name}</span>
+          </div>
+        )}
         <button className="header-button">
           <FaFileExport />
           <span>Export</span>

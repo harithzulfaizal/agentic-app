@@ -1,7 +1,8 @@
+/* Updated CSS Variables */
 :root {
-  --primary-color: #10a37f;
-  --primary-hover: #0e8e6f;
-  --primary-light: #e9f7f4;
+  --primary-color: #164f93;
+  --primary-hover: #0d3b70;
+  --primary-light: #e9f0f9;
   --secondary-color: #6c757d;
   --danger-color: #dc3545;
   --danger-hover: #bd2130;
